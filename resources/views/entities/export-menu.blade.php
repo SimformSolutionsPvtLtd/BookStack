@@ -1,16 +1,16 @@
 <div component="dropdown"
-     class="dropdown-container"
+     class="dropdown-container display-inline-item"
      id="export-menu">
 
     <div refs="dropdown@toggle"
-         class="icon-list-item"
+         class="icon-list-item page-icon-list"
          aria-haspopup="true"
          aria-expanded="false"
          aria-label="{{ trans('entities.export') }}"
          data-shortcut="export"
-         tabindex="0">
+         tabindex="0"
+         title="{{ trans('entities.export') }}">
         <span>@icon('export')</span>
-        <span>{{ trans('entities.export') }}</span>
     </div>
 
     <ul refs="dropdown@menu" class="wide dropdown-menu" role="menu">

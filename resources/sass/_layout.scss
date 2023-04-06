@@ -382,6 +382,11 @@ body.flexbox {
     max-width: 940px;
     margin: 0 auto;
   }
+
+  .tri-layout-middle-contents-page {
+    max-width: 1170px;
+    margin: 0 auto;
+  }
 }
 
 @include smaller-than($l) {

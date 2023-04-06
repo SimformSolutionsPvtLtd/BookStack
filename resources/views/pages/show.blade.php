@@ -19,7 +19,7 @@
     <main class="content-wrap card">
         <div component="page-display"
              option:page-display:page-id="{{ $page->id }}"
-             class="page-content clearfix">
+             class="page-content clearfix page-max-width">
             @include('pages.parts.page-display')
         </div>
         @include('pages.parts.pointer', ['page' => $page])
@@ -57,23 +57,6 @@
             </div>
         </div>
     @endif
-
-    @if (isset($pageNav) && count($pageNav))
-        <nav id="page-navigation" class="mb-xl" aria-label="{{ trans('entities.pages_navigation') }}">
-            <h5>{{ trans('entities.pages_navigation') }}</h5>
-            <div class="body">
-                <div class="sidebar-page-nav menu">
-                    @foreach($pageNav as $navItem)
-                        <li class="page-nav-item h{{ $navItem['level'] }}">
-                            <a href="{{ $navItem['link'] }}" class="text-limit-lines-1 block">{{ $navItem['text'] }}</a>
-                            <div class="link-background sidebar-page-nav-bullet"></div>
-                        </li>
-                    @endforeach
-                </div>
-            </div>
-        </nav>
-    @endif
-
     @include('entities.book-tree', ['book' => $book, 'sidebarTree' => $sidebarTree])
 @stop
 
@@ -147,43 +130,35 @@
 
             {{--User Actions--}}
             @if(userCan('page-update', $page))
-                <a href="{{ $page->getUrl('/edit') }}" data-shortcut="edit" class="icon-list-item">
+                <a href="{{ $page->getUrl('/edit') }}" data-shortcut="edit" class="icon-list-item page-icon-list" title="{{ trans('common.edit') }}">
                     <span>@icon('edit')</span>
-                    <span>{{ trans('common.edit') }}</span>
                 </a>
             @endif
             @if(userCanOnAny('create', \BookStack\Entities\Models\Book::class) || userCanOnAny('create', \BookStack\Entities\Models\Chapter::class) || userCan('page-create-all') || userCan('page-create-own'))
-                <a href="{{ $page->getUrl('/copy') }}" data-shortcut="copy" class="icon-list-item">
+                <a href="{{ $page->getUrl('/copy') }}" data-shortcut="copy" class="icon-list-item page-icon-list" title="{{ trans('common.copy') }}">
                     <span>@icon('copy')</span>
-                    <span>{{ trans('common.copy') }}</span>
                 </a>
             @endif
             @if(userCan('page-update', $page))
                 @if(userCan('page-delete', $page))
-	                <a href="{{ $page->getUrl('/move') }}" data-shortcut="move" class="icon-list-item">
+	                <a href="{{ $page->getUrl('/move') }}" data-shortcut="move" class="icon-list-item page-icon-list" title="{{ trans('common.move') }}">
 	                    <span>@icon('folder')</span>
-	                    <span>{{ trans('common.move') }}</span>
 	                </a>
                 @endif
             @endif
-            <a href="{{ $page->getUrl('/revisions') }}" data-shortcut="revisions" class="icon-list-item">
+            <a href="{{ $page->getUrl('/revisions') }}" data-shortcut="revisions" class="icon-list-item page-icon-list" title="{{ trans('entities.revisions') }}">
                 <span>@icon('history')</span>
-                <span>{{ trans('entities.revisions') }}</span>
             </a>
             @if(userCan('restrictions-manage', $page))
-                <a href="{{ $page->getUrl('/permissions') }}" data-shortcut="permissions" class="icon-list-item">
+                <a href="{{ $page->getUrl('/permissions') }}" data-shortcut="permissions" class="icon-list-item page-icon-list" title="{{ trans('entities.permissions') }}">
                     <span>@icon('lock')</span>
-                    <span>{{ trans('entities.permissions') }}</span>
                 </a>
             @endif
             @if(userCan('page-delete', $page))
-                <a href="{{ $page->getUrl('/delete') }}" data-shortcut="delete" class="icon-list-item">
+                <a href="{{ $page->getUrl('/delete') }}" data-shortcut="delete" class="icon-list-item page-icon-list" title="{{ trans('common.delete') }}">
                     <span>@icon('delete')</span>
-                    <span>{{ trans('common.delete') }}</span>
                 </a>
             @endif
-
-            <hr class="primary-background"/>
 
             @if(signedInUser())
                 @include('entities.favourite-action', ['entity' => $page])
@@ -194,4 +169,19 @@
         </div>
 
     </div>
+    @if (isset($pageNav) && count($pageNav))
+        <nav id="page-navigation" class="mb-xl" aria-label="{{ trans('entities.pages_navigation') }}">
+            <h5>{{ trans('entities.pages_navigation') }}</h5>
+            <div class="body">
+                <div class="sidebar-page-nav menu">
+                    @foreach($pageNav as $navItem)
+                        <li class="page-nav-item h{{ $navItem['level'] }}">
+                            <a href="{{ $navItem['link'] }}" class="text-limit-lines-1 block">{{ $navItem['text'] }}</a>
+                            <div class="link-background sidebar-page-nav-bullet"></div>
+                        </li>
+                    @endforeach
+                </div>
+            </div>
+        </nav>
+    @endif
 @stop
