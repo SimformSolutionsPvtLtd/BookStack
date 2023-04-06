@@ -34,7 +34,7 @@
         </div>
 
         <div class="@yield('body-wrap-classes') tri-layout-middle">
-            <div id="main-content" class="tri-layout-middle-contents">
+            <div id="main-content" class="{{ Route::currentRouteName() == 'page-show' ? 'tri-layout-middle-contents-page' : 'tri-layout-middle-contents' }}">
                 @yield('body')
             </div>
         </div>

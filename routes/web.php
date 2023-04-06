@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/books/{bookSlug}/create-guest-page', [PageController::class, 'createAsGuest']);
     Route::get('/books/{bookSlug}/draft/{pageId}', [PageController::class, 'editDraft']);
     Route::post('/books/{bookSlug}/draft/{pageId}', [PageController::class, 'store']);
-    Route::get('/books/{bookSlug}/page/{pageSlug}', [PageController::class, 'show']);
+    Route::get('/books/{bookSlug}/page/{pageSlug}', [PageController::class, 'show'])->name('page-show');
     Route::get('/books/{bookSlug}/page/{pageSlug}/export/pdf', [PageExportController::class, 'pdf']);
     Route::get('/books/{bookSlug}/page/{pageSlug}/export/html', [PageExportController::class, 'html']);
     Route::get('/books/{bookSlug}/page/{pageSlug}/export/markdown', [PageExportController::class, 'markdown']);
