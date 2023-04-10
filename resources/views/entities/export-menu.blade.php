@@ -1,5 +1,5 @@
 <div component="dropdown"
-     class="dropdown-container display-inline-item"
+     class="dropdown-container @if(request()->routeIs('page-show'))display-inline-item @endif"
      id="export-menu">
 
     <div refs="dropdown@toggle"
@@ -11,6 +11,9 @@
          tabindex="0"
          title="{{ trans('entities.export') }}">
         <span>@icon('export')</span>
+        @if(!request()->routeIs('page-show'))
+            <span>{{ trans('entities.export') }}</span>
+        @endif
     </div>
 
     <ul refs="dropdown@menu" class="wide dropdown-menu" role="menu">
