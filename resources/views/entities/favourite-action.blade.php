@@ -7,5 +7,8 @@
     <input type="hidden" name="id" value="{{ $entity->id }}">
     <button type="submit" data-shortcut="favourite" class="icon-list-item text-link page-icon-list" title="{{ $isFavourite ? trans('common.unfavourite') : trans('common.favourite') }}">
         <span>@icon($isFavourite ? 'star' : 'star-outline')</span>
+        @if(!request()->routeIs('page-show'))
+            <span>{{ $isFavourite ? trans('common.unfavourite') : trans('common.favourite') }}</span>
+        @endif
     </button>
 </form>
