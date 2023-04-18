@@ -4,6 +4,7 @@ namespace BookStack\Http\Controllers;
 
 use BookStack\Actions\ActivityQueries;
 use BookStack\Actions\View;
+use BookStack\Entities\Models\BookShelfUser;
 use BookStack\Entities\Models\Book;
 use BookStack\Entities\Repos\BookshelfRepo;
 use BookStack\Entities\Tools\ShelfContext;
@@ -13,6 +14,7 @@ use BookStack\References\ReferenceFetcher;
 use BookStack\Util\SimpleListOptions;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class BookshelfController extends Controller
@@ -202,9 +204,27 @@ class BookshelfController extends Controller
     {
         $shelf = $this->shelfRepo->getBySlug($slug);
         $this->checkOwnablePermission('bookshelf-delete', $shelf);
-
+        $shelfId = $shelf->id;
         $this->shelfRepo->destroy($shelf);
-
+        BookShelfUser::where('shalevs_id',$shelfId)->delete();
         return redirect('/shelves');
+    }
+
+    public function syncWithTitan(string $slug)
+    {
+        $shelf = $this->shelfRepo->getBySlug($slug);
+
+        try {
+            if ($shelf) {
+                $this->shelfRepo->getBookShelfData($shelf);
+                $this->showSuccessNotification(trans('Shelves synchronized with Titan'));
+            }
+            return redirect()->back();
+        }
+        catch(\Exception $e) {
+            $this->showErrorNotification(trans('Something went wrong Please try after sometime.'));
+            Log::channel('command')->error('syncWithTitan '.$e->getMessage());
+            return redirect()->back();
+        }
     }
 }

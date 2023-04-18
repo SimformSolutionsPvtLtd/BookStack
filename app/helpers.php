@@ -2,6 +2,10 @@
 
 use BookStack\Auth\Permissions\PermissionApplicator;
 use BookStack\Auth\User;
+use BookStack\Entities\Models\Book;
+use BookStack\Entities\Models\Bookshelf;
+use BookStack\Entities\Models\Chapter;
+use BookStack\Entities\Models\Page;
 use BookStack\Model;
 use BookStack\Settings\SettingService;
 
@@ -63,6 +67,12 @@ function userCan(string $permission, Model $ownable = null): bool
     if ($ownable === null) {
         return user() && user()->can($permission);
     }
+
+    if (user()->hasRole(3) && $permission != 'restrictions-manage' && ($ownable instanceof Bookshelf && count($ownable->shlevesUser) || $ownable instanceof Book && $ownable->getUserByShelves() || $ownable instanceof Page && $ownable->book->getUserByShelves()|| $ownable instanceof Chapter && $ownable->book->getUserByShelves()))
+    {
+        return true;
+    }
+
 
     // Check permission on ownable item
     $permissions = app(PermissionApplicator::class);
@@ -176,4 +186,17 @@ function sortUrl(string $path, array $data, array $overrideData = []): string
     }
 
     return url($path . '?' . implode('&', $queryStringSections));
+}
+
+function getUser(string $email) :User
+{
+    $user = User::where('email', $email)->first();
+
+    if (is_null($user)) {
+        $user = User::whereRelation('roles', 'name','admin')->first();
+    }
+    
+    return $user;
+
+
 }

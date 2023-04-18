@@ -142,6 +142,12 @@
                     <span>{{ trans('common.delete') }}</span>
                 </a>
             @endif
+            @if(userCan('bookshelf-update', $shelf) && userCan('bookshelf-delete', $shelf))
+                <a href="{{ $shelf->getUrl('/sync') }}" data-shortcut="sync" class="icon-list-item">
+                    <span>@icon('time')</span>
+                    <span>{{ trans('Sync with Titan') }}</span>
+                </a>
+            @endif
 
             @if(signedInUser())
                 <hr class="primary-background">

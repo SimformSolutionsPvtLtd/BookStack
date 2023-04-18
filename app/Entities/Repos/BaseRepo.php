@@ -30,7 +30,7 @@ class BaseRepo
     {
         $entity->fill($input);
         $entity->forceFill([
-            'created_by' => user()->id,
+            'created_by' => isset($input['email']) ? getUser($input['email'])->id : user()->id,
             'updated_by' => user()->id,
             'owned_by'   => user()->id,
         ]);
