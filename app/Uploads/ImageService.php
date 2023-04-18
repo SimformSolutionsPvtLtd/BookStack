@@ -389,11 +389,14 @@ class ImageService
      *
      * @throws FileNotFoundException
      */
-    public function getImageData(Image $image): string
+    public function getImageData(Image $image): ?string
     {
         $storage = $this->getStorageDisk();
-
-        return $storage->get($this->adjustPathForStorageDisk($image->path, $image->type));
+        $path = $this->adjustPathForStorageDisk($image->path, $image->type);
+        if ($storage->exists($path)) {
+            return $storage->get($path);
+        }
+        return null;
     }
 
     /**

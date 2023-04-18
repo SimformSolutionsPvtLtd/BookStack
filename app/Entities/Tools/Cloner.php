@@ -165,10 +165,12 @@ class Cloner
     protected function imageToUploadedFile(Image $image): ?UploadedFile
     {
         $imgData = $this->imageService->getImageData($image);
-        $tmpImgFilePath = tempnam(sys_get_temp_dir(), 'bs_cover_clone_');
-        file_put_contents($tmpImgFilePath, $imgData);
-
-        return new UploadedFile($tmpImgFilePath, basename($image->path));
+        if (!is_null($imgData)) {
+            $tmpImgFilePath = tempnam(sys_get_temp_dir(), 'bs_cover_clone_');
+            file_put_contents($tmpImgFilePath, $imgData);
+            return new UploadedFile($tmpImgFilePath, basename($image->path));
+        }
+        return null;
     }
 
     /**
