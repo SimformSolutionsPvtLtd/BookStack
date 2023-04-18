@@ -28,10 +28,10 @@
 
 <div class="form-group collapsible" component="collapsible" id="docs-control">
     <button refs="collapsible@trigger" type="button" class="collapse-title text-link" aria-expanded="false">
-        <label>{{ trans('common.document_file') }}</label>
+        <label>{{ trans('common.select_document') }}</label>
     </button>
     <div refs="collapsible@content" class="collapse-content">
-        <p class="small">{{ trans('common.select_document') }}</p>
+        <p class="small"></p>
         <input type="file" id="fileInput" name="document_file" accept=".docx">
         <input type="hidden" id="html_input" name="html_input" value="">
         @if($errors->has('document_file'))
