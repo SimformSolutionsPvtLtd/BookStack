@@ -7,6 +7,7 @@ use BookStack\Entities\Repos\BookshelfRepo;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class BookshelfApiController extends ApiController
@@ -122,5 +123,17 @@ class BookshelfApiController extends ApiController
                 'image'       => array_merge(['nullable'], $this->getImageValidationRules()),
             ],
         ];
+    }
+
+    public function addShelfFromApi(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'name'        => ['required', 'string', 'max:255',Rule::unique('bookshelves', 'name')->whereNull('deleted_at')],
+            'description' => ['string', 'max:1000'],
+            'email' => ['required','string','email','max:50'],
+        ]);
+        $shelf = $this->bookshelfRepo->create($validated,[]);
+
+        return response()->json($shelf);
     }
 }

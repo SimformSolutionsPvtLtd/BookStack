@@ -76,6 +76,11 @@ return [
             'driver' => 'errorlog',
             'level'  => 'debug',
         ],
+        'command' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/command.log'),
+            'level' => 'debug',
+        ],
 
         // Custom errorlog implementation that logs out a plain,
         // non-formatted message intended for the webserver log.

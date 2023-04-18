@@ -17,7 +17,9 @@
                 <div class="form-group text-right">
                     <a href="{{ url("/settings/roles") }}" class="button outline">{{ trans('common.cancel') }}</a>
                     <a href="{{ url("/settings/roles/new?copy_from={$role->id}") }}" class="button outline">{{ trans('common.copy') }}</a>
-                    <a href="{{ url("/settings/roles/delete/{$role->id}") }}" class="button outline">{{ trans('settings.role_delete') }}</a>
+                    @if($role->id !== 3)
+                        <a href="{{ url("/settings/roles/delete/{$role->id}") }}" class="button outline">{{ trans('settings.role_delete') }}</a>
+                    @endif
                     <button type="submit" class="button">{{ trans('settings.role_save') }}</button>
                 </div>
             </form>

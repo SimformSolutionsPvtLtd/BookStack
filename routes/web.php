@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/shelves/{slug}', [BookshelfController::class, 'show']);
     Route::put('/shelves/{slug}', [BookshelfController::class, 'update']);
     Route::delete('/shelves/{slug}', [BookshelfController::class, 'destroy']);
+    Route::get('/shelves/{slug}/sync', [BookshelfController::class, 'syncWithTitan']);
+
     Route::get('/shelves/{slug}/permissions', [PermissionsController::class, 'showForShelf']);
     Route::put('/shelves/{slug}/permissions', [PermissionsController::class, 'updateForShelf']);
     Route::post('/shelves/{slug}/copy-permissions', [PermissionsController::class, 'copyShelfPermissionsToBooks']);

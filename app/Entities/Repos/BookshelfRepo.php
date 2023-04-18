@@ -3,6 +3,7 @@
 namespace BookStack\Entities\Repos;
 
 use BookStack\Actions\ActivityType;
+use BookStack\Entities\Models\BookShelfUser;
 use BookStack\Entities\Models\Book;
 use BookStack\Entities\Models\Bookshelf;
 use BookStack\Entities\Tools\TrashCan;
@@ -145,5 +146,31 @@ class BookshelfRepo
         $trashCan->softDestroyShelf($shelf);
         Activity::add(ActivityType::BOOKSHELF_DELETE, $shelf);
         $trashCan->autoClearOld();
+    }
+
+    /**
+     * Get shelves and users from titan project.
+     */
+    public function getBookShelfData($shelve)
+    {
+      $projectUsers = \DB::connection('pgsql')->table('projects')
+        ->select('projects.zoho_project_code','project_zoho_users.user_id as to_user_id','users.communication_email')
+        ->join('project_zoho_users', 'projects.project_id', '=', 'project_zoho_users.project_id')
+        ->join('users', 'project_zoho_users.user_id', '=', 'users.user_id')
+        ->where('projects.zoho_project_code', $shelve->name)
+        ->get();
+        if (count($projectUsers) > 0) {
+            $this->addUsersToBookstack($projectUsers,$shelve);
+        }
+    }
+
+    /**
+     * Add users to bookstack.
+     */
+    public function addUsersToBookstack($projectUsers,$shelve)
+    {
+        foreach ($projectUsers as $projectUser) {
+            BookShelfUser::updateOrCreate(['email' => $projectUser->communication_email,'shalevs_id' => $shelve->id]);   
+        }
     }
 }

@@ -16,6 +16,9 @@ class ApiAuthenticate
     {
         // Validate the token and it's users API access
         try {
+            if (request()->routeIs('create-shelves') && $request->header('secret') === env('SECRET_KEY')) {
+                return $next($request);
+            }    
             $this->ensureAuthorizedBySessionOrToken();
         } catch (UnauthorizedException $exception) {
             return $this->unauthorisedResponse($exception->getMessage(), $exception->getCode());

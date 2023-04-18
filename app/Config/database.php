@@ -95,6 +95,18 @@ return [
             'prefix_indexes' => true,
             'strict'         => false,
         ],
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST_PGSQL'),
+            'port' => env('DB_PORT_PGSQL'),
+            'database' => env('DB_DATABASE_PGSQL'),
+            'username' => env('DB_USERNAME_PGSQL'),
+            'password' => env('DB_PASSWORD_PGSQL'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
 
     ],
 

@@ -129,4 +129,18 @@ class Book extends Entity implements HasCoverImage
     {
         return static::visible()->where('slug', '=', $slug)->firstOrFail();
     }
+
+    /**
+     * Get the shelves this book is contained within.
+     */
+    public function getUserByShelves(): bool
+    {
+        $bookshelves = $this->shelves()
+            ->whereHas('shlevesUser', function ($query) {
+                $query->where('email',auth()->user()->email);
+            })
+            ->get();
+        return count($bookshelves) ? true : false;
+    }
+
 }

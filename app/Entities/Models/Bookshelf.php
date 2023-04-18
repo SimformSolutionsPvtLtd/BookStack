@@ -2,10 +2,12 @@
 
 namespace BookStack\Entities\Models;
 
+use BookStack\Entities\Models\BookShelfUser;
 use BookStack\Uploads\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bookshelf extends Entity implements HasCoverImage
 {
@@ -117,5 +119,10 @@ class Bookshelf extends Entity implements HasCoverImage
     public static function getBySlug(string $slug): self
     {
         return static::visible()->where('slug', '=', $slug)->firstOrFail();
+    }
+
+    public function shlevesUser(): HasMany
+    {
+        return $this->hasMany(BookShelfUser::class,'shalevs_id','id')->where('email',auth()->user()->email);
     }
 }
