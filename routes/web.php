@@ -96,6 +96,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/{bookSlug}/export/markdown', [BookExportController::class, 'markdown']);
     Route::get('/books/{bookSlug}/export/zip', [BookExportController::class, 'zip']);
     Route::get('/books/{bookSlug}/export/plaintext', [BookExportController::class, 'plainText']);
+    Route::get('/books/{bookSlug}/change-status', [BookController::class, 'showChangeStatusPage']);
+    Route::post('/books/{bookSlug}/change-status', [BookController::class, 'changeStatus']);
 
     // Pages
     Route::get('/books/{bookSlug}/create-page', [PageController::class, 'create']);

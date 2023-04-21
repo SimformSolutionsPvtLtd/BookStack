@@ -21,7 +21,12 @@ class ActivityLogger
         $detailToStore = ($detail instanceof Loggable) ? $detail->logDescriptor() : $detail;
 
         $activity = $this->newActivityForUser($type);
-        $activity->detail = $detailToStore;
+        if ($type === ActivityType::BOOK_STATUS_UPDATE) {
+            $activity->detail = $this->addCustomDetails($detail);
+            $activity->status_reason = $detail->status_reason;
+        } else {
+            $activity->detail = $detailToStore;
+        }
 
         if ($detail instanceof Entity) {
             $activity->entity_id = $detail->id;
@@ -105,5 +110,9 @@ class ActivityLogger
         $message = str_replace('%u', $username, $message);
         $channel = config('logging.failed_login.channel');
         Log::channel($channel)->warning($message);
+    }
+
+    public function addCustomDetails($detail) {
+        return $detailToStore = $detail->old_status.' To '.$detail->status;
     }
 }

@@ -75,4 +75,5 @@ return [
     // Other
     'commented_on'                => 'commented on',
     'permissions_update'          => 'updated permissions',
+    'book_status_update' => 'updated book status',
 ];

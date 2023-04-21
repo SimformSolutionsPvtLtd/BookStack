@@ -27,8 +27,12 @@ class Book extends Entity implements HasCoverImage
 
     public $searchFactor = 1.2;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description','status','status_reason'];
     protected $hidden = ['pivot', 'image_id', 'deleted_at'];
+
+    const ALL_STATUS = ['Pending','WIP','Approved','Rejected','Hold'];
+    const REJECTED = 'Rejected';
+    const HOLD = 'Hold';
 
     /**
      * Get the url for this book.

@@ -20,6 +20,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use BookStack\Entities\Repos\PageRepo;
 use Throwable;
+use BookStack\Actions\Activity as ActivityModel;
+use BookStack\Entities\Models\Book;
 
 class BookController extends Controller
 {
@@ -42,11 +44,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $view = setting()->getForCurrentUser('books_view_type');
-        $listOptions = SimpleListOptions::fromRequest($request, 'books')->withSortOptions([
-            'name' => trans('common.sort_name'),
-            'created_at' => trans('common.sort_created_at'),
-            'updated_at' => trans('common.sort_updated_at'),
-        ]);
+        $listOptions = SimpleListOptions::fromRequest($request, 'books')->withSortOptions($this->bookRepo->addSortOption());
 
         $books = $this->bookRepo->getAllPaginated(18, $listOptions->getSort(), $listOptions->getOrder());
         $recents = $this->isSignedIn() ? $this->bookRepo->getRecentlyViewed(4) : false;
@@ -347,5 +345,39 @@ class BookController extends Controller
        
         return $this->pageRepo->publishDraft($draftPage, $request->all());
 
+    }
+
+    public function showChangeStatusPage(string $bookSlug)
+    {
+        $book = $this->bookRepo->getBySlug($bookSlug);
+        $this->checkOwnablePermission('book-delete', $book);
+        $this->setPageTitle(trans('entities.change_status', ['bookName' => $book->getShortName()]));
+        
+        $activities = ActivityModel::with(['user'])
+            ->where('entity_id', $book->id)
+            ->where('type',ActivityType::BOOK_STATUS_UPDATE)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        
+        return view('books.change-status', ['book' => $book, 'current' => $book,'enums' => Book::ALL_STATUS,'activities' => $activities]);
+    }
+
+    public function changeStatus(Request $request, string $slug) {
+        
+        $book = $this->bookRepo->getBySlug($slug);
+        $this->checkOwnablePermission('book-update', $book);
+
+        $validated = $this->validate($request, [
+            'status'        => ['required', 'in:'.implode(',', Book::ALL_STATUS)],
+            'status_reason' => ['required_if:status,'.Book::REJECTED.','.Book::HOLD,'max:191','min:20'],
+        ]);
+        if ($book->status == $request->status) {
+            $this->showErrorNotification(trans('settings.status_already_updated',['status' => $request->status]));
+            return redirect()->back();
+        }
+        $validated['old_status'] = $book->status;
+        $book = $this->bookRepo->update($book, $validated);
+        $this->showSuccessNotification(trans('settings.status_updated',['status' => $request->status]));
+        return redirect($book->getUrl());
     }
 }

@@ -24,7 +24,10 @@
     </div>
 
     <main class="content-wrap card">
-        <h1 class="break-text">{{$book->name}}</h1>
+        <div class="flex-container-row wrap justify-space-between items-center">
+            <h1 class="break-word">{{$book->name}}</h1>
+            <img src="{{asset(strtolower($book->status).'.png')}}" class="text-right" width="120">
+        </div>
         <div refs="entity-search@contentView" class="book-content">
             <p class="text-muted">{!! nl2br(e($book->description)) !!}</p>
             @if(count($bookChildren) > 0)
@@ -116,6 +119,12 @@
                 <a href="{{ $book->getUrl('/sort') }}" data-shortcut="sort" class="icon-list-item">
                     <span>@icon('sort')</span>
                     <span>{{ trans('common.sort') }}</span>
+                </a>
+            @endif
+            @if(userCan('book-create-all'))
+                <a href="{{ $book->getUrl('/change-status') }}" data-shortcut="change-status" class="icon-list-item">
+                    <span>@icon('copy')</span>
+                    <span>{{ trans('Change Status') }}</span>
                 </a>
             @endif
             @if(userCan('book-create-all'))
