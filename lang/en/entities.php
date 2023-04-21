@@ -400,4 +400,8 @@ return [
     'references' => 'References',
     'references_none' => 'There are no tracked references to this item.',
     'references_to_desc' => 'Shown below are all the known pages in the system that link to this item.',
+    'change_status' => 'Change status',
+    'status' => 'Status',
+    'status_reason' => 'Reason',
+    'select_status' => 'Select Status',
 ];

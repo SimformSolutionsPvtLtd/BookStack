@@ -36,6 +36,10 @@ class BookRepo
      */
     public function getAllPaginated(int $count = 20, string $sort = 'name', string $order = 'asc'): LengthAwarePaginator
     {
+        if (in_array($sort, Book::ALL_STATUS)) {
+            return Book::visible()->with('cover')->where('status',$sort)->paginate($count);
+        }
+
         return Book::visible()->with('cover')->orderBy($sort, $order)->paginate($count);
     }
 
@@ -107,9 +111,13 @@ class BookRepo
         if (array_key_exists('image', $input)) {
             $this->baseRepo->updateCoverImage($book, $input['image'], $input['image'] === null);
         }
-
-        Activity::add(ActivityType::BOOK_UPDATE, $book);
-
+        
+        if (isset($input['status']) && $book->status !== $input['old_status']) {
+            $book->old_status = $input['old_status'];
+            Activity::add(ActivityType::BOOK_STATUS_UPDATE, $book);
+        } else {
+            Activity::add(ActivityType::BOOK_UPDATE, $book);
+        }
         return $book;
     }
 
@@ -149,5 +157,20 @@ class BookRepo
         $trashCan->softDestroyPages($book);
         Activity::add(ActivityType::BOOK_PAGES_DELETE, $book);
         $trashCan->autoClearOld();
+    }
+
+     /**
+     * add sort options for books.
+     */
+    public function addSortOption() {
+        $enums = Book::ALL_STATUS;
+        $enumsArray = [];
+        foreach ($enums as $enum) {
+            $enumsArray[$enum] = $enum;
+        }
+        return array_merge($enumsArray,['name' => trans('common.sort_name'),
+        'created_at' => trans('common.sort_created_at'),
+        'updated_at' => trans('common.sort_updated_at'),
+        ]);
     }
 }

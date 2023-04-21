@@ -63,6 +63,7 @@ class ActivityType
     const WEBHOOK_UPDATE = 'webhook_update';
     const WEBHOOK_DELETE = 'webhook_delete';
     const BOOK_PAGES_DELETE = 'book_pages_delete';
+    const BOOK_STATUS_UPDATE = 'book_status_update';
 
 
     /**
