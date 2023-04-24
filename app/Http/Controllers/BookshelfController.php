@@ -212,6 +212,9 @@ class BookshelfController extends Controller
 
     public function syncWithTitan(string $slug)
     {
+        if (!user()->hasRole(1)) {
+            $this->showPermissionError();
+        }
         $shelf = $this->shelfRepo->getBySlug($slug);
 
         try {

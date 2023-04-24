@@ -142,7 +142,7 @@
                     <span>{{ trans('common.delete') }}</span>
                 </a>
             @endif
-            @if(userCan('bookshelf-update', $shelf) && userCan('bookshelf-delete', $shelf))
+            @if(user()->hasRole(1))
                 <a href="{{ $shelf->getUrl('/sync') }}" data-shortcut="sync" class="icon-list-item">
                     <span>@icon('time')</span>
                     <span>{{ trans('Sync with Titan') }}</span>
