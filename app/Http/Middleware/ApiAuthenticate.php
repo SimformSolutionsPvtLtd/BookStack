@@ -16,7 +16,7 @@ class ApiAuthenticate
     {
         // Validate the token and it's users API access
         try {
-            if (request()->routeIs('create-shelves') && $request->header('secret') === env('SECRET_KEY')) {
+            if ((request()->routeIs('create-shelves') || request()->routeIs('books-report')) && $request->header('secret') === env('SECRET_KEY')) {
                 return $next($request);
             }    
             $this->ensureAuthorizedBySessionOrToken();

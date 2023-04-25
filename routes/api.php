@@ -36,6 +36,7 @@ Route::post('books', [BookApiController::class, 'create']);
 Route::get('books/{id}', [BookApiController::class, 'read']);
 Route::put('books/{id}', [BookApiController::class, 'update']);
 Route::delete('books/{id}', [BookApiController::class, 'delete']);
+Route::post('books-report',[BookApiController::class, 'getBooksReport'])->name('books-report');
 
 Route::get('books/{id}/export/html', [BookExportApiController::class, 'exportHtml']);
 Route::get('books/{id}/export/pdf', [BookExportApiController::class, 'exportPdf']);
