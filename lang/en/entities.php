@@ -404,4 +404,5 @@ return [
     'status' => 'Status',
     'status_reason' => 'Reason',
     'select_status' => 'Select Status',
+    'book_status_message' => 'Book status is :status. This change was made on :date by :user.',
 ];

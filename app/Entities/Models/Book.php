@@ -2,12 +2,16 @@
 
 namespace BookStack\Entities\Models;
 
+use BookStack\Actions\Activity;
+use BookStack\Actions\ActivityType;
+use BookStack\Auth\User;
 use BookStack\Uploads\Image;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 /**
@@ -30,9 +34,10 @@ class Book extends Entity implements HasCoverImage
     protected $fillable = ['name', 'description','status','status_reason'];
     protected $hidden = ['pivot', 'image_id', 'deleted_at'];
 
-    const ALL_STATUS = ['Pending','WIP','Approved','Rejected','Hold'];
+    const ALL_STATUS = ['Pending','WIP','Approved by Lead','Approved by Client','Rejected','Hold'];
     const REJECTED = 'Rejected';
     const HOLD = 'Hold';
+    const APPROVED_BY_CLIENT = 'Approved by Client';
 
     /**
      * Get the url for this book.
@@ -147,4 +152,8 @@ class Book extends Entity implements HasCoverImage
         return count($bookshelves) ? true : false;
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'created_by','id');
+    }
 }

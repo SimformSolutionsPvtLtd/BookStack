@@ -24,10 +24,8 @@
     </div>
 
     <main class="content-wrap card">
-        <div class="flex-container-row wrap justify-space-between items-center">
             <h1 class="break-word">{{$book->name}}</h1>
-            <img src="{{asset(strtolower($book->status).'.png')}}" class="text-right" width="120">
-        </div>
+            <strong>{{trans('entities.book_status_message',['status' => $book->status,'date' => isset($lastActivity) ? $lastActivity->created_at->format('d M Y') :$book->created_at->format('d M Y'),'user' => isset($lastActivity) ? $lastActivity->user->name :$book->user->name])}}</strong>
         <div refs="entity-search@contentView" class="book-content">
             <p class="text-muted">{!! nl2br(e($book->description)) !!}</p>
             @if(count($bookChildren) > 0)
@@ -121,10 +119,10 @@
                     <span>{{ trans('common.sort') }}</span>
                 </a>
             @endif
-            @if(userCan('book-create-all'))
+            @if(userCan('book-create-all') && $book->status !== $book::APPROVED_BY_CLIENT || user()->hasRole(1))
                 <a href="{{ $book->getUrl('/change-status') }}" data-shortcut="change-status" class="icon-list-item">
-                    <span>@icon('copy')</span>
-                    <span>{{ trans('Change Status') }}</span>
+                    <span>@icon('edit')</span>
+                    <span>{{ trans('entities.change_status') }}</span>
                 </a>
             @endif
             @if(userCan('book-create-all'))
