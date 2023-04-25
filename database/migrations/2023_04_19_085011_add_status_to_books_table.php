@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->enum('status', ['Pending', 'WIP','Approved','Rejected','Hold'])->default('Pending');
+            $table->enum('status', ['Pending', 'WIP','Approved by Lead','Approved by Client','Rejected','Hold'])->default('Pending');
             $table->string('status_reason')->nullable();
         });
     }

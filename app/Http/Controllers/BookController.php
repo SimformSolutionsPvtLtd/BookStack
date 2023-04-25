@@ -137,6 +137,11 @@ class BookController extends Controller
         if ($request->has('shelf')) {
             $this->shelfContext->setShelfContext(intval($request->get('shelf')));
         }
+        $lastActivity = ActivityModel::with(['user'])
+            ->where('entity_id', $book->id)
+            ->where('type',ActivityType::BOOK_STATUS_UPDATE)
+            ->orderBy('created_at', 'desc')
+            ->first();    
 
         $this->setPageTitle($book->getShortName());
 
@@ -147,6 +152,7 @@ class BookController extends Controller
             'bookParentShelves' => $bookParentShelves,
             'activity'          => $activities->entityActivity($book, 20, 1),
             'referenceCount'    => $this->referenceFetcher->getPageReferenceCountToEntity($book),
+            'lastActivity' => $lastActivity,
         ]);
     }
 

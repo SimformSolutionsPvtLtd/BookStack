@@ -44,7 +44,7 @@
 
             <div class="form-group text-right">
                 <a href="{{ $book->getUrl() }}" class="button outline">{{ trans('common.cancel') }}</a>
-                <button type="submit" class="button" @if($book->status === 'Approved') disabled @endif>{{ trans('entities.change_status') }}</button>
+                <button type="submit" class="button" @if($book->status === $book::APPROVED_BY_CLIENT) disabled @endif>{{ trans('entities.change_status') }}</button>
             </div>
         </form>
 
