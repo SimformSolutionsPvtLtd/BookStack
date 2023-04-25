@@ -156,4 +156,9 @@ class Book extends Entity implements HasCoverImage
     {
         return $this->belongsTo(User::class,'created_by','id');
     }
+
+    public function status_activity(): HasMany
+    {
+        return $this->hasMany(Activity::class,'entity_id','id')->where('type',ActivityType::BOOK_STATUS_UPDATE)->orderBy('created_at','desc');
+    }
 }

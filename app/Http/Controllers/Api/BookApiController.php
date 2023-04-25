@@ -8,6 +8,7 @@ use BookStack\Entities\Models\Chapter;
 use BookStack\Entities\Models\Entity;
 use BookStack\Entities\Repos\BookRepo;
 use BookStack\Entities\Tools\BookContents;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -123,5 +124,28 @@ class BookApiController extends ApiController
                 'image'       => array_merge(['nullable'], $this->getImageValidationRules()),
             ],
         ];
+    }
+
+    public function getBooksReport(Request $request)
+    {
+        try {
+            $filtered_data = Book::query()
+            ->when($request->has('name'), function ($query) use ($request) {
+                return $query->where('name', 'like', '%'.$request->name.'%');
+            })
+            ->when($request->has('status'), function ($query) use ($request) {
+                return $query->where('status', $request->status);
+            })
+            ->when($request->has('from_date') && $request->has('to_date'), function ($query) use ($request) {
+                return $query->whereBetween($request->field, [Carbon::parse($request->from_date)->startOfDay(), Carbon::parse($request->to_date)->endOfDay()]);
+            })
+            ->with(['user','status_activity','status_activity.user'])
+            ->select('id','name','status','created_by','created_at','updated_at','deleted_at')
+            ->paginate(10);
+            return response()->json($filtered_data);
+        }
+        catch (\Exception $e) {
+
+        }
     }
 }
