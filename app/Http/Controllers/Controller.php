@@ -161,4 +161,14 @@ abstract class Controller extends BaseController
     {
         return ['mimetypes:application/msword,application/vnd.ms-word.document,application/vnd.ms-word,application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     }
+
+    /**
+     * Checks that the current user has the given permission otherwise throw an exception.
+     */
+    protected function checkPermissionForPrivacy(object $book): void
+    {
+        if($book->privacy_method == "Private") {
+            $this->checkPermission('access-private-books');
+        }
+    }
 }

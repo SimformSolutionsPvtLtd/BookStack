@@ -9,7 +9,17 @@
     <label for="description">{{ trans('common.description') }}</label>
     @include('form.textarea', ['name' => 'description'])
 </div>
-
+<div class="form-group">
+    <label for="privacy_method">{{ trans('entities.select_privacy') }}</label>
+    <select class="input-fill-width" name="privacy_method" id="privacy_method">
+        <option value="">{{ trans('entities.select_privacy') }}</option>
+        <option value="Public" @if(isset($model) && $model->privacy_method == 'Public') selected @endif>Public</option>
+        <option value="Private" @if(isset($model) && $model->privacy_method == 'Private') selected @endif>Private</option>
+    </select>
+    @if($errors->has('privacy_method'))
+       <div class="text-neg text-small">{{ $errors->first('privacy_method') }}</div>
+    @endif
+</div>
 <div class="form-group collapsible" component="collapsible" id="logo-control">
     <button refs="collapsible@trigger" type="button" class="collapse-title text-link" aria-expanded="false">
         <label>{{ trans('common.cover_image') }}</label>
