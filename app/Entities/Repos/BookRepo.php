@@ -37,10 +37,14 @@ class BookRepo
     public function getAllPaginated(int $count = 20, string $sort = 'name', string $order = 'asc'): LengthAwarePaginator
     {
         if (in_array($sort, Book::ALL_STATUS)) {
-            return Book::visible()->with('cover')->where('status',$sort)->paginate($count);
+            return Book::visible()->with('cover')->when(!auth()->user()->can('access-private-books'),function($query){
+                  $query->where('privacy_method','Public');
+            })->where('status',$sort)->paginate($count);
         }
 
-        return Book::visible()->with('cover')->orderBy($sort, $order)->paginate($count);
+        return Book::visible()->with('cover')->when(!auth()->user()->can('access-private-books'),function($query){
+            $query->where('privacy_method','Public');
+        })->orderBy($sort, $order)->paginate($count);
     }
 
     /**

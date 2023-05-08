@@ -325,5 +325,6 @@ return [
     'status_log_detail' => 'This status log displays a list of changes made to the book status, including who made the change, when it was made, and the reason for the change.',
     'status_already_updated' => ':status already updated. Please select a different status.',
     'status_updated' => 'Status updated successfully.',
+    'access_private_books' => 'Access Private Books',
     //!////////////////////////////////
 ];
