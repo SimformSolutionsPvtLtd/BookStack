@@ -125,6 +125,7 @@ class PageController extends Controller
     {
         try {
             $page = $this->pageRepo->getBySlug($bookSlug, $pageSlug);
+            $this->checkPermissionForPrivacy($page->book);
         } catch (NotFoundException $e) {
             $page = $this->pageRepo->getByOldSlug($bookSlug, $pageSlug);
 
@@ -188,6 +189,7 @@ class PageController extends Controller
     public function edit(Request $request, string $bookSlug, string $pageSlug)
     {
         $page = $this->pageRepo->getBySlug($bookSlug, $pageSlug);
+        $this->checkPermissionForPrivacy($page->book);
         $this->checkOwnablePermission('page-update', $page);
 
         $editorData = new PageEditorData($page, $this->pageRepo, $request->query('editor', ''));
@@ -265,6 +267,8 @@ class PageController extends Controller
     {
         $page = $this->pageRepo->getBySlug($bookSlug, $pageSlug);
         $this->checkOwnablePermission('page-delete', $page);
+        $this->checkPermissionForPrivacy($page->book);
+
         $this->setPageTitle(trans('entities.pages_delete_named', ['pageName' => $page->getShortName()]));
 
         return view('pages.delete', [
@@ -302,6 +306,8 @@ class PageController extends Controller
     {
         $page = $this->pageRepo->getBySlug($bookSlug, $pageSlug);
         $this->checkOwnablePermission('page-delete', $page);
+        $this->checkPermissionForPrivacy($page->book);
+
         $parent = $page->getParent();
 
         $this->pageRepo->destroy($page);

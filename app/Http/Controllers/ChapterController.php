@@ -66,6 +66,7 @@ class ChapterController extends Controller
     public function show(string $bookSlug, string $chapterSlug)
     {
         $chapter = $this->chapterRepo->getBySlug($bookSlug, $chapterSlug);
+        $this->checkPermissionForPrivacy($chapter->book);
         $this->checkOwnablePermission('chapter-view', $chapter);
 
         $sidebarTree = (new BookContents($chapter->book))->getTree();
@@ -93,6 +94,7 @@ class ChapterController extends Controller
     public function edit(string $bookSlug, string $chapterSlug)
     {
         $chapter = $this->chapterRepo->getBySlug($bookSlug, $chapterSlug);
+        $this->checkPermissionForPrivacy($chapter->book);
         $this->checkOwnablePermission('chapter-update', $chapter);
 
         $this->setPageTitle(trans('entities.chapters_edit_named', ['chapterName' => $chapter->getShortName()]));
@@ -124,6 +126,7 @@ class ChapterController extends Controller
     {
         $chapter = $this->chapterRepo->getBySlug($bookSlug, $chapterSlug);
         $this->checkOwnablePermission('chapter-delete', $chapter);
+        $this->checkPermissionForPrivacy($chapter->book);
 
         $this->setPageTitle(trans('entities.chapters_delete_named', ['chapterName' => $chapter->getShortName()]));
 

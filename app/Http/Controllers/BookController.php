@@ -100,6 +100,7 @@ class BookController extends Controller
             'image'       => array_merge(['nullable'], $this->getImageValidationRules()),
             'tags'        => ['array'],
             'document_file' => array_merge(['nullable','file','max:5120'],$this->getMimeTypes()),
+            'privacy_method' => ['required','in:Public,Private'],
         ],[
             'document_file.mimetypes' => 'The Document file is not supported.',
         ]);
@@ -130,6 +131,7 @@ class BookController extends Controller
     public function show(Request $request, ActivityQueries $activities, string $slug)
     {
         $book = $this->bookRepo->getBySlug($slug);
+        $this->checkPermissionForPrivacy($book);
         $bookChildren = (new BookContents($book))->getTree(true);
         $bookParentShelves = $book->shelves()->scopes('visible')->get();
 
@@ -163,6 +165,7 @@ class BookController extends Controller
     {
         $book = $this->bookRepo->getBySlug($slug);
         $this->checkOwnablePermission('book-update', $book);
+        $this->checkPermissionForPrivacy($book);
         $this->setPageTitle(trans('entities.books_edit_named', ['bookName' => $book->getShortName()]));
 
         return view('books.edit', ['book' => $book, 'current' => $book]);
@@ -187,6 +190,7 @@ class BookController extends Controller
             'tags'        => ['array'],
             'document_file' => array_merge(['nullable','file','max:5120'],$this->getMimeTypes()),
             'document_option' => ['required_with:document_file','in:new,append'],
+            'privacy_method' => ['required','in:Public,Private'],
         ],[
             'document_file.mimetypes' => 'The Document file is not supported.',
         ]);
@@ -215,6 +219,7 @@ class BookController extends Controller
     {
         $book = $this->bookRepo->getBySlug($bookSlug);
         $this->checkOwnablePermission('book-delete', $book);
+        $this->checkPermissionForPrivacy($book);
         $this->setPageTitle(trans('entities.books_delete_named', ['bookName' => $book->getShortName()]));
 
         return view('books.delete', ['book' => $book, 'current' => $book]);
@@ -228,6 +233,7 @@ class BookController extends Controller
     public function destroy(string $bookSlug)
     {
         $book = $this->bookRepo->getBySlug($bookSlug);
+        $this->checkPermissionForPrivacy($book);
         $this->checkOwnablePermission('book-delete', $book);
 
         $this->bookRepo->destroy($book);
@@ -244,6 +250,7 @@ class BookController extends Controller
     {
         $book = $this->bookRepo->getBySlug($bookSlug);
         $this->checkOwnablePermission('book-view', $book);
+        $this->checkPermissionForPrivacy($book);
 
         $bookshelf = Bookshelf::visible()->orderBy('name')->get(['name', 'id', 'slug', 'created_at', 'updated_at']);
 
