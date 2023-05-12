@@ -326,5 +326,6 @@ return [
     'status_already_updated' => ':status already updated. Please select a different status.',
     'status_updated' => 'Status updated successfully.',
     'access_private_books' => 'Access Private Books',
+    'notifications_clear_success' => 'Notifications are cleared.',
     //!////////////////////////////////
 ];
