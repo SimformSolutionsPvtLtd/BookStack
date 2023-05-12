@@ -197,6 +197,26 @@ function getUser(string $email) :User
     }
     
     return $user;
+}
 
-
+function getUrl($id,$type)
+{
+    if ($type == 'page') {
+        $page = Page::find($id);
+        if ($page && $page->getUrl())
+        {
+            return $page->getUrl();
+        }
+        return '#';
+    } else if ($type == 'change-status') {
+        $book = Book::find($id);
+        if ($book && $book->getUrl())
+        {
+            return $book->getUrl().'/change-status';
+        }
+        return '#';
+    }
+    else {
+        return '#';
+    }
 }

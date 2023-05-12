@@ -35,7 +35,7 @@
 
             <div class="form-group">
                 <label for="name">{{ trans('entities.status_reason') }}</label>
-                <input type="text" class="input-fill-width" name="status_reason" id="status_reason">
+                <input type="text" class="input-fill-width" name="status_reason" id="mention">
                 @if($errors->has('status_reason'))
                     <div class="text-neg text-small">{{ $errors->first('status_reason') }}</div>
                 @endif

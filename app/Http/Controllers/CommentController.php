@@ -42,6 +42,17 @@ class CommentController extends Controller
         $this->checkPermission('comment-create-all');
         $comment = $this->commentRepo->create($page, $request->get('text'), $request->get('parent_id'));
 
+        $notifiableEmails = $this->getNotifiableEmails($request->text);
+        if (count($notifiableEmails) > 0)
+        {
+            $data = [
+                'message' => auth()->user()->name. ' Mentioned you in comment. '. $this->removeMentionUser($request->text),
+                'module_id' => $page->id,
+                'type' => 'page',
+                ];
+            $this->sendNotifications($notifiableEmails,$data); 
+        }
+        
         return view('comments.comment', ['comment' => $comment]);
     }
 
@@ -61,6 +72,17 @@ class CommentController extends Controller
         $this->checkOwnablePermission('comment-update', $comment);
 
         $comment = $this->commentRepo->update($comment, $request->get('text'));
+        
+        $notifiableEmails = $this->getNotifiableEmails($request->text);
+        if (count($notifiableEmails) > 0)
+        {
+            $data = [
+                'message' => auth()->user()->name .' Mentioned you in comment. '. $this->removeMentionUser($request->text),
+                'module_id' => $comment->entity_id,
+                'type' => 'page',
+                ];
+            $this->sendNotifications($notifiableEmails,$data); 
+        }
 
         return view('comments.comment', ['comment' => $comment]);
     }

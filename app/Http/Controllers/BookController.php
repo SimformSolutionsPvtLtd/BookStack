@@ -390,6 +390,17 @@ class BookController extends Controller
         }
         $validated['old_status'] = $book->status;
         $book = $this->bookRepo->update($book, $validated);
+
+        $notifiableEmails = $this->getNotifiableEmails($request->status_reason);
+        if (count($notifiableEmails) > 0)
+        {
+            $data = [
+                'message' => auth()->user()->name .' Mentioned you in comment. '. $this->removeMentionUser($request->status_reason),
+                'module_id' => $book->id,
+                'type' => 'change-status',
+                ];
+            $this->sendNotifications($notifiableEmails,$data); 
+        }
         $this->showSuccessNotification(trans('settings.status_updated',['status' => $request->status]));
         return redirect($book->getUrl());
     }
