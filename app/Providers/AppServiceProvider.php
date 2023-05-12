@@ -4,6 +4,7 @@ namespace BookStack\Providers;
 
 use BookStack\Actions\ActivityLogger;
 use BookStack\Auth\Access\SocialAuthService;
+use BookStack\Auth\User;
 use BookStack\Entities\Models\Book;
 use BookStack\Entities\Models\Bookshelf;
 use BookStack\Entities\Models\Chapter;
@@ -14,8 +15,10 @@ use BookStack\Util\CspService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\ExceptionRenderer;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Client\ClientInterface as HttpClientInterface;
 
@@ -64,7 +67,13 @@ class AppServiceProvider extends ServiceProvider
             'book'      => Book::class,
             'chapter'   => Chapter::class,
             'page'      => Page::class,
+            'user' => User::class,
         ]);
+
+        View::composer('*', function ($view) {
+            $users = DB::table('users')->select('email as key','name as value')->get();
+            $view->with('users', $users);
+        });
     }
 
     /**

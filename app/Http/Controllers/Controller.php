@@ -2,15 +2,18 @@
 
 namespace BookStack\Http\Controllers;
 
+use BookStack\Auth\User;
 use BookStack\Exceptions\NotifyException;
 use BookStack\Facades\Activity;
 use BookStack\Http\Responses\DownloadResponseFactory;
 use BookStack\Interfaces\Loggable;
 use BookStack\Model;
+use BookStack\Notifications\MentionUser;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Notification;
 
 abstract class Controller extends BaseController
 {
@@ -167,8 +170,36 @@ abstract class Controller extends BaseController
      */
     protected function checkPermissionForPrivacy(object $book): void
     {
-        if($book->privacy_method == "Private") {
+        if ($book->privacy_method == "Private") {
             $this->checkPermission('access-private-books');
         }
+    }
+
+    protected function getNotifiableEmails($content)
+    {
+        $matches = array();
+        preg_match_all('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/', $content, $matches);
+        if (count($matches[0]) > 0) {
+            return $matches[0];
+        }
+        return [];
+    }
+
+    protected function sendNotifications($emails,$notificationData)
+    {
+      
+        $users = User::whereIn('email',$emails)->where('email','!=',auth()->user()->email)->get();
+        if (count($users) > 0 )
+        {
+          Notification::send($users, new MentionUser($notificationData));
+        }
+    }
+
+    protected function removeMentionUser($content)
+    {
+        $pattern = '/\b[\w.-]+@[a-z0-9.-]+\.[a-z]{2,}\b/i';
+        $content = preg_replace($pattern, '', $content);
+        return preg_replace('/\B@\w+\b/', '', $content);
+
     }
 }

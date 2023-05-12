@@ -66,4 +66,22 @@ class SettingController extends Controller
             abort(404);
         }
     }
+
+    public function getNotifications()
+    {
+        $user = auth()->user();
+        $notifications = $user->notifications()->paginate(10);
+        $user->unreadNotifications->markAsRead();
+        return view('common.list-notifications',['notifications' => $notifications]);
+    }
+
+    public function clearNotifications()
+    {
+        $notifications = auth()->user()->notifications;
+        $notifications->each(function ($notification) {
+            $notification->delete();
+        });
+        $this->showSuccessNotification(trans('settings.notifications_clear_success'));
+        return redirect()->back();
+    }
 }

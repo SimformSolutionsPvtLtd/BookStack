@@ -16,7 +16,7 @@
         <form novalidate>
             <div class="form-group description-input">
                         <textarea name="markdown" rows="3"
-                                  placeholder="{{ trans('entities.comment_placeholder') }}"></textarea>
+                                  placeholder="{{ trans('entities.comment_placeholder') }}" id="mention"></textarea>
             </div>
             <div class="form-group text-right">
                 <button type="button" class="button outline"
