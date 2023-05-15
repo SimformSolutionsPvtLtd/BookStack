@@ -74,7 +74,7 @@
     <script src="{{ asset('tribute/tribute.js') }}" nonce="{{ $cspNonce }}"></script>
     <script src="{{ asset('tribute/tribute.min.js') }}" nonce="{{ $cspNonce }}"></script>
     <script nonce="{{ $cspNonce }}">
-        var users = @json($users);
+        var users = @json($usersList);
 
         var tribute = new Tribute({
             values: users,
