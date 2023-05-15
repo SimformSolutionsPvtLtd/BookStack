@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $users = DB::table('users')->select('email as key','name as value')->get();
-            $view->with('users', $users);
+            $view->with('usersList', $users);
         });
     }
 
