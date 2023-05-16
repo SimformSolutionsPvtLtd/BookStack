@@ -21,6 +21,7 @@ use BookStack\Http\Controllers\Api\RecycleBinApiController;
 use BookStack\Http\Controllers\Api\RoleApiController;
 use BookStack\Http\Controllers\Api\SearchApiController;
 use BookStack\Http\Controllers\Api\UserApiController;
+use BookStack\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('docs.json', [ApiDocsController::class, 'json']);
@@ -79,6 +80,8 @@ Route::get('shelves/{id}', [BookshelfApiController::class, 'read']);
 Route::put('shelves/{id}', [BookshelfApiController::class, 'update']);
 Route::delete('shelves/{id}', [BookshelfApiController::class, 'delete']);
 Route::post('create-shelves',[BookshelfApiController::class,'addShelfFromApi'])->name('create-shelves');
+Route::post('create-book-and-page',[BookController::class,'addBookWithPage'])->name('create-book-and-page');
+
 
 Route::get('users', [UserApiController::class, 'list']);
 Route::post('users', [UserApiController::class, 'create']);

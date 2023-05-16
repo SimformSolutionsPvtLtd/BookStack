@@ -300,7 +300,7 @@ class BookController extends Controller
     /**
      * Get heading tag and child content
      */
-    public function addPages($book,$request) {
+    public function addPages($book,$request,$permissionCheck = true) {
 
         $dom = new \DomDocument();
         $dom->loadHTML($request->html_input);
@@ -335,7 +335,7 @@ class BookController extends Controller
                     'html' => $page['content'],
                     'template' => false,
                 ]);
-               $this->createPage($book,$request);
+               $this->createPage($book,$request,$permissionCheck);
             }
         } else {
             $request->merge([
@@ -343,19 +343,21 @@ class BookController extends Controller
                 'html' => $request->html_input,
                 'template' => false,
             ]);
-            $this->createPage($book,$request);
+            $this->createPage($book,$request,$permissionCheck);
         }
     }
 
     /**
      * Create respective book page
      */
-    public function createPage($book ,$request) {
+    public function createPage($book ,$request,$permissionCheck = true) {
 
         $draft = $this->pageRepo->getNewDraftPage($book);
         $draftPage = $this->pageRepo->getById($draft->id);
-        $this->checkOwnablePermission('page-create', $draftPage->getParent());
-       
+        if ($permissionCheck)
+        {
+            $this->checkOwnablePermission('page-create', $draftPage->getParent());
+        }       
         return $this->pageRepo->publishDraft($draftPage, $request->all());
 
     }
@@ -403,5 +405,26 @@ class BookController extends Controller
         }
         $this->showSuccessNotification(trans('settings.status_updated',['status' => $request->status]));
         return redirect($book->getUrl());
+    }
+
+    public function addBookWithPage(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'description' => ['string', 'max:1000'],
+            'tags'        => ['array'],
+            'html_input' => ['required', 'string'],
+        ]);
+
+        try {
+            $book = $this->bookRepo->create($validatedData);
+        
+            if (!empty($request->html_input)) {
+                $this->addPages($book,$request,false);
+            }
+            return response()->json($book);
+        }catch(\Exception $e) {
+            return response()->json(['error' => 'An error occurred '. $e->getMessage()], 500);
+        }
     }
 }
