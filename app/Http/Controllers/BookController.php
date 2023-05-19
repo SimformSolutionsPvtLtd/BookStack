@@ -413,11 +413,20 @@ class BookController extends Controller
             'name'        => ['required', 'string', 'max:255'],
             'description' => ['string', 'max:1000'],
             'tags'        => ['array'],
+            'shelf_name' => ['string', 'required'],
             'html_input' => ['required', 'string'],
         ]);
 
         try {
+            $bookshelf = Bookshelf::where('name', '=', $request->shelf_name)->first();
+            if (!$bookshelf)
+            {
+                return response()->json(['error' => 'Shelf not found.'], 500);
+            }
+       
             $book = $this->bookRepo->create($validatedData);
+            $bookshelf->appendBook($book);
+           
         
             if (!empty($request->html_input)) {
                 $this->addPages($book,$request,false);

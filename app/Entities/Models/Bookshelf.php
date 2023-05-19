@@ -29,7 +29,7 @@ class Bookshelf extends Entity implements HasCoverImage
      */
     public function books()
     {
-        return $this->belongsToMany(Book::class, 'bookshelves_books', 'bookshelf_id', 'book_id')->when(!auth()->user()->can('access-private-books'),function($query){
+        return $this->belongsToMany(Book::class, 'bookshelves_books', 'bookshelf_id', 'book_id')->when(auth()->user() && !auth()->user()->can('access-private-books'),function($query){
             $query->where('privacy_method','Public');
         })
         ->withPivot('order')
