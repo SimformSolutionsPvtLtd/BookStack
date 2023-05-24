@@ -33,6 +33,8 @@ class Book extends Entity implements HasCoverImage
 
     protected $fillable = ['name', 'description','status','status_reason','privacy_method'];
     protected $hidden = ['pivot', 'image_id', 'deleted_at'];
+    protected $appends = ['book_detail_url'];
+
 
     const ALL_STATUS = ['Pending','WIP','Approved by Lead','Approved by Client','Rejected','Hold'];
     const REJECTED = 'Rejected';
@@ -46,6 +48,12 @@ class Book extends Entity implements HasCoverImage
     {
         return url('/books/' . implode('/', [urlencode($this->slug), trim($path, '/')]));
     }
+
+    public function getBookDetailUrlAttribute()
+    {
+      return $this->getUrl();
+    }
+
 
     /**
      * Returns book cover image, if book cover not exists return default cover image.
