@@ -22,6 +22,7 @@ use BookStack\Entities\Repos\PageRepo;
 use Throwable;
 use BookStack\Actions\Activity as ActivityModel;
 use BookStack\Entities\Models\Book;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -315,9 +316,18 @@ class BookController extends Controller
             // Get the content below the h1 element until the next h1 element
             $content = '';
             $nextElement = $h1Element->nextSibling;
+
+            while ($nextElement && $nextElement->nodeType !== XML_ELEMENT_NODE) {
+                $nextElement = $nextElement->nextSibling;
+            }
+        
             while ($nextElement && $nextElement->tagName !== 'h1') {
             $content .= $dom->saveHTML($nextElement);
             $nextElement = $nextElement->nextSibling;
+
+            while ($nextElement && $nextElement->nodeType !== XML_ELEMENT_NODE) {
+                $nextElement = $nextElement->nextSibling;
+            }    
             }
             // Create an object for the page title and content
             $page = [
@@ -431,7 +441,7 @@ class BookController extends Controller
             if (!empty($request->html_input)) {
                 $this->addPages($book,$request,false);
             }
-            return response()->json($book);
+            return response()->json($book->load('shelves'));
         }catch(\Exception $e) {
             return response()->json(['error' => 'An error occurred '. $e->getMessage()], 500);
         }
