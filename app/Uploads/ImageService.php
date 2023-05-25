@@ -207,8 +207,9 @@ class ImageService
         // Attempting to set ACL during above put request requires different permissions
         // hence would technically be a breaking change for actual s3 usage.
         $usingS3 = strtolower(config('filesystems.images')) === 's3';
-        $usingS3Like = $usingS3 && !is_null(config('filesystems.disks.s3.endpoint'));
-        if (!$usingS3Like) {
+        // $usingS3Like = $usingS3 && !is_null(config('filesystems.disks.s3.endpoint'));
+        // dd($usingS3Like);
+        if (!$usingS3) {
             $storage->setVisibility($path, 'public');
         }
     }
