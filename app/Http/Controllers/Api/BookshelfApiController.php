@@ -136,4 +136,26 @@ class BookshelfApiController extends ApiController
 
         return response()->json($shelf);
     }
+
+    public function getShelvesWithBooks(Request $request)
+    {    
+        try {
+            $shelves = Bookshelf::with(['cover','books','books.pages'])->when(isset($request->name) && !empty($request->name),function($query) use ($request){
+                $query->whereIn('name',$request->name);
+            })->orderBy('created_at','desc')->get();
+
+            $shelves->each(function ($shelf) {
+                $shelf->books->each(function ($book) {
+                    $book->pages->each(function ($page) {
+                        $page->makeVisible(['html','text']);
+                    });
+                });
+            });
+            
+            return response()->json($shelves);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred '. $e->getMessage()], 500);
+        }
+    }
 }
