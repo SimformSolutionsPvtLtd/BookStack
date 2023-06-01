@@ -6,7 +6,9 @@ use BookStack\Actions\ActivityQueries;
 use BookStack\Actions\View;
 use BookStack\Entities\Models\BookShelfUser;
 use BookStack\Entities\Models\Book;
+use BookStack\Entities\Models\Bookshelf;
 use BookStack\Entities\Repos\BookshelfRepo;
+use BookStack\Entities\Tools\Cloner;
 use BookStack\Entities\Tools\ShelfContext;
 use BookStack\Exceptions\ImageUploadException;
 use BookStack\Exceptions\NotFoundException;
@@ -229,5 +231,45 @@ class BookshelfController extends Controller
             Log::channel('command')->error('syncWithTitan '.$e->getMessage());
             return redirect()->back();
         }
+    }
+
+    /**
+     * Show the view to copy a shelves book.
+     *
+     * @throws NotFoundException
+     */
+    public function showCopy(string $slug)
+    {
+        $shelf = $this->shelfRepo->getBySlug($slug);
+        
+        $bookshelf = Bookshelf::visible()->where('id','!=',$shelf->id)->orderBy('name')->get(['name', 'id', 'slug', 'created_at', 'updated_at']);
+        return view('shelves.copy', [
+            'shelf' => $shelf,
+            'bookshelf' => $bookshelf,
+            'books' => $shelf->books
+        ]);
+    }
+
+    /**
+     * Create a copy of a book within the requested target destination.
+     *
+     * @throws NotFoundException
+     */
+    public function copy(Request $request, Cloner $cloner, string $slug)
+    {
+        $this->checkPermission('bookshelf-create-all');
+       
+        $validated = $this->validate($request, [
+            'shelves'        => ['required', 'string','not_in:Select Shelves'],
+            'books' => ['required', 'string'],
+        ]);
+
+        $shelf = $this->shelfRepo->getBySlug($request->shelves);
+        $this->checkOwnablePermission('bookshelf-update', $shelf);
+     
+        $cloner->cloneShelvesBooks($shelf,$request->books);
+        $this->showSuccessNotification(trans('entities.books_copy_success'));
+
+        return redirect($shelf->getUrl());
     }
 }

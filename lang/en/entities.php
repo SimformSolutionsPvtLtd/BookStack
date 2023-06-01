@@ -407,4 +407,9 @@ return [
     'book_status_message' => 'Book status is :status. This change was made on :date by :user.',
     'select_privacy' => 'Select privacy',
     'notifications' => 'Notifications',
+    'select_shelves' => 'Select Shelves',
+    'selected_books_to_copy' => 'Selected books to copy.',
+    'select_book_to_copy' => 'Select book to copy in different shelves.',
+    'filter_books' => 'Filter books',
+    'books_copy_multiple' => 'Copy Books',
 ];

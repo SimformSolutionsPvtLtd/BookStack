@@ -142,6 +142,12 @@
                     <span>{{ trans('common.delete') }}</span>
                 </a>
             @endif
+            @if(userCan('book-create-all') && userCan('bookshelf-update', $shelf))
+            <a href="{{ $shelf->getUrl('/copy') }}" data-shortcut="copy" class="icon-list-item">
+                <span>@icon('copy')</span>
+                <span>{{ trans('common.copy') }}</span>
+            </a>
+            @endif
             @if(user()->hasRole(1))
                 <a href="{{ $shelf->getUrl('/sync') }}" data-shortcut="sync" class="icon-list-item">
                     <span>@icon('time')</span>
