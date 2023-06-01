@@ -188,4 +188,24 @@ class Cloner
 
         return $tags;
     }
+
+    /**
+     * Clone the given book.
+     * Clones all child chapters & pages.
+     */
+    public function cloneShelvesBooks(Bookshelf $original, string $newShelves = null): Bookshelf
+    {   
+         $booksId = explode(',', $newShelves);
+            $books = Book::whereIn('id', $booksId)->get();
+            foreach ($books as $book) {
+                    $bookDetails = $this->entityToInputData($book);
+                    // Clone book content
+                    $copyBook = $this->cloneBookContent($book, $bookDetails);
+
+                    $original->appendBook($copyBook);
+            }
+        return $original;
+    }
+
+
 }
