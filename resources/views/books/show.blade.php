@@ -50,12 +50,12 @@
                                 <span>{{ trans('entities.books_empty_create_page') }}</span>
                             </a>
                         @endif
-                        @if(userCan('chapter-create', $book))
+                        {{-- @if(userCan('chapter-create', $book))
                             <a href="{{ $book->getUrl('/create-chapter') }}" class="icon-list-item text-chapter">
                                 <span class="icon">@icon('chapter')</span>
                                 <span>{{ trans('entities.books_empty_add_chapter') }}</span>
                             </a>
-                        @endif
+                        @endif --}}
                     </div>
 
                 </div>
@@ -100,20 +100,22 @@
                     <span>{{ trans('entities.pages_new') }}</span>
                 </a>
             @endif
-            @if(userCan('chapter-create', $book))
-                <a href="{{ $book->getUrl('/create-chapter') }}" data-shortcut="new" class="icon-list-item">
-                    <span>@icon('add')</span>
-                    <span>{{ trans('entities.chapters_new') }}</span>
-                </a>
-            @endif
-
-            <hr class="primary-background">
-
             @if(userCan('book-update', $book))
                 <a href="{{ $book->getUrl('/edit') }}" data-shortcut="edit" class="icon-list-item">
                     <span>@icon('edit')</span>
                     <span>{{ trans('common.edit') }}</span>
                 </a>
+            @endif
+      
+            {{-- @if(userCan('chapter-create', $book))
+                <a href="{{ $book->getUrl('/create-chapter') }}" data-shortcut="new" class="icon-list-item">
+                    <span>@icon('add')</span>
+                    <span>{{ trans('entities.chapters_new') }}</span>
+                </a>
+            @endif --}}
+
+            <hr class="primary-background">
+            @if(userCan('book-update', $book))
                 <a href="{{ $book->getUrl('/sort') }}" data-shortcut="sort" class="icon-list-item">
                     <span>@icon('sort')</span>
                     <span>{{ trans('common.sort') }}</span>

@@ -6,13 +6,13 @@
                 {{ $deletion->deletable->name }}
             </div>
         </div>
-        @if($deletion->deletable instanceof \BookStack\Entities\Models\Book)
+        {{-- @if($deletion->deletable instanceof \BookStack\Entities\Models\Book)
             <div class="pl-l block inline">
                 <div class="text-chapter">
                     @icon('chapter') {{ trans_choice('entities.x_chapters', $deletion->deletable->chapters()->withTrashed()->count()) }}
                 </div>
             </div>
-        @endif
+        @endif --}}
         @if($deletion->deletable instanceof \BookStack\Entities\Models\Book || $deletion->deletable instanceof \BookStack\Entities\Models\Chapter)
             <div class="pl-l block inline">
                 <div class="text-page">

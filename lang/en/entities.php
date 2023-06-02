@@ -133,7 +133,7 @@ return [
     'books_save' => 'Save Book',
     'books_permissions' => 'Book Permissions',
     'books_permissions_updated' => 'Book Permissions Updated',
-    'books_empty_contents' => 'No pages or chapters have been created for this book.',
+    'books_empty_contents' => 'No pages have been created for this book.',
     'books_empty_create_page' => 'Create a new page',
     'books_empty_sort_current_book' => 'Sort the current book',
     'books_empty_add_chapter' => 'Add a chapter',
